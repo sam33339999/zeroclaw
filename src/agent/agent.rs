@@ -510,6 +510,7 @@ impl Agent {
                         } else {
                             None
                         },
+                        max_tokens: self.config.max_tokens,
                     },
                     &effective_model,
                     self.temperature,

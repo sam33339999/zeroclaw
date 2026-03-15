@@ -557,7 +557,11 @@ impl Provider for AnthropicProvider {
 
         let native_request = NativeChatRequest {
             model: model.to_string(),
-            max_tokens: 4096,
+            max_tokens: if request.max_tokens > 0 {
+                request.max_tokens
+            } else {
+                4096
+            },
             system: system_prompt,
             messages,
             temperature,
@@ -634,6 +638,7 @@ impl Provider for AnthropicProvider {
             } else {
                 Some(&tool_specs)
             },
+            max_tokens: 0, // 0 = use provider default
         };
         self.chat(request, model, temperature).await
     }

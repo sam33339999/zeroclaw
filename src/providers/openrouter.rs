@@ -65,6 +65,8 @@ struct NativeChatRequest {
     messages: Vec<NativeMessage>,
     temperature: f64,
     #[serde(skip_serializing_if = "Option::is_none")]
+    max_tokens: Option<u32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     tools: Option<Vec<NativeToolSpec>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     tool_choice: Option<String>,
@@ -441,6 +443,11 @@ impl Provider for OpenRouterProvider {
             model: model.to_string(),
             messages: Self::convert_messages(request.messages),
             temperature,
+            max_tokens: if request.max_tokens > 0 {
+                Some(request.max_tokens)
+            } else {
+                None
+            },
             tool_choice: tools.as_ref().map(|_| "auto".to_string()),
             tools,
         };
@@ -532,6 +539,7 @@ impl Provider for OpenRouterProvider {
             model: model.to_string(),
             messages: native_messages,
             temperature,
+            max_tokens: None,
             tool_choice: native_tools.as_ref().map(|_| "auto".to_string()),
             tools: native_tools,
         };

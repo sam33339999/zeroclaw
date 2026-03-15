@@ -791,6 +791,13 @@ pub struct AgentConfig {
     /// Maximum conversation history messages retained per session. Default: `50`.
     #[serde(default = "default_agent_max_history_messages")]
     pub max_history_messages: usize,
+    /// Maximum output tokens the LLM may generate per response. Default: `4096`.
+    ///
+    /// Increase this if responses are cut off mid-sentence. Decrease to reduce cost
+    /// on providers that charge per output token.
+    /// Setting to `0` defers to each provider's own default (typically 4096).
+    #[serde(default = "default_agent_max_tokens")]
+    pub max_tokens: u32,
     /// Enable parallel tool execution within a single iteration. Default: `false`.
     #[serde(default)]
     pub parallel_tools: bool,
@@ -817,6 +824,10 @@ fn default_agent_max_history_messages() -> usize {
     50
 }
 
+fn default_agent_max_tokens() -> u32 {
+    4096
+}
+
 fn default_agent_tool_dispatcher() -> String {
     "auto".into()
 }
@@ -827,6 +838,7 @@ impl Default for AgentConfig {
             compact_context: false,
             max_tool_iterations: default_agent_max_tool_iterations(),
             max_history_messages: default_agent_max_history_messages(),
+            max_tokens: default_agent_max_tokens(),
             parallel_tools: false,
             tool_dispatcher: default_agent_tool_dispatcher(),
             tool_call_dedup_exempt: Vec::new(),

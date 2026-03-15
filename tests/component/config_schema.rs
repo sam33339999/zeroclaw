@@ -345,3 +345,44 @@ fn config_memory_defaults_when_section_absent() {
         "vector + keyword weights should sum to ~1.0"
     );
 }
+
+#[test]
+fn agent_config_default_max_tokens() {
+    let parsed: Config = toml::from_str("default_temperature = 0.7\n")
+        .expect("minimal TOML should parse");
+    assert_eq!(parsed.agent.max_tokens, 4096, "max_tokens default should be 4096");
+}
+
+#[test]
+fn agent_config_max_tokens_configurable() {
+    let toml_str = r#"
+[agent]
+max_tokens = 8192
+"#;
+    let parsed: Config = toml::from_str(toml_str).expect("max_tokens config should parse");
+    assert_eq!(parsed.agent.max_tokens, 8192);
+}
+
+#[test]
+fn agent_config_max_tokens_zero_is_allowed() {
+    let toml_str = r#"
+[agent]
+max_tokens = 0
+"#;
+    let parsed: Config =
+        toml::from_str(toml_str).expect("max_tokens = 0 should parse (treated as provider default)");
+    assert_eq!(parsed.agent.max_tokens, 0);
+}
+
+#[test]
+fn agent_config_max_tokens_backward_compat_absent() {
+    // An existing config without max_tokens should silently use the default.
+    let toml_str = r#"
+[agent]
+max_history_messages = 30
+"#;
+    let parsed: Config =
+        toml::from_str(toml_str).expect("config without max_tokens should use default");
+    assert_eq!(parsed.agent.max_tokens, 4096);
+    assert_eq!(parsed.agent.max_history_messages, 30);
+}
