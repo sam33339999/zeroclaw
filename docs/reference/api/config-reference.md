@@ -79,6 +79,7 @@ Operational note for container users:
 | `compact_context` | `false` | When true: bootstrap_max_chars=6000, rag_chunk_limit=2. Use for 13B or smaller models |
 | `max_tool_iterations` | `10` | Maximum tool-call loop turns per user message across CLI, gateway, and channels |
 | `max_history_messages` | `50` | Maximum conversation history messages retained per session |
+| `max_tokens` | `4096` | Maximum output tokens the LLM may generate per response |
 | `parallel_tools` | `false` | Enable parallel tool execution within a single iteration |
 | `tool_dispatcher` | `auto` | Tool dispatch strategy |
 | `tool_call_dedup_exempt` | `[]` | Tool names exempt from within-turn duplicate-call suppression |
@@ -91,6 +92,7 @@ Notes:
 - In CLI, gateway, and channel tool loops, multiple independent tool calls are executed concurrently by default when the pending calls do not require approval gating; result order remains stable.
 - `parallel_tools` applies to the `Agent::turn()` API surface. It does not gate the runtime loop used by CLI, gateway, or channel handlers.
 - `tool_call_dedup_exempt` accepts an array of exact tool names. Tools listed here are allowed to be called multiple times with identical arguments in the same turn, bypassing the dedup check. Example: `tool_call_dedup_exempt = ["browser"]`.
+- Setting `max_tokens = 0` defers to each provider's own built-in default (typically 4096). Increase this value if responses are being cut off mid-sentence. For models with a small context window (e.g. 8K), lower `max_history_messages` and/or enable `compact_context` to keep the prompt within the model's context limit.
 
 ### `tool_filter_groups`
 

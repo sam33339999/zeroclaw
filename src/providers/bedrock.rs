@@ -1073,7 +1073,11 @@ impl Provider for BedrockProvider {
             system,
             messages: converse_messages,
             inference_config: Some(InferenceConfig {
-                max_tokens: DEFAULT_MAX_TOKENS,
+                max_tokens: if request.max_tokens > 0 {
+                    request.max_tokens
+                } else {
+                    DEFAULT_MAX_TOKENS
+                },
                 temperature,
             }),
             tool_config,

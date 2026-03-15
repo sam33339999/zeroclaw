@@ -416,6 +416,7 @@ impl DelegateTool {
                 "delegate",
                 &self.multimodal_config,
                 agent_config.max_iterations,
+                0, // max_tokens: 0 = use provider default
                 None,
                 None,
                 None,
