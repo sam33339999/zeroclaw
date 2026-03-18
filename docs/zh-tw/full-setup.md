@@ -95,8 +95,32 @@ zeroclaw doctor
 zeroclaw channel doctor
 ```
 
+## 網路訪問設定
+
+ZeroClaw 預設拒絕所有 HTTP 請求（`[http_request]` 預設停用且 `allowed_domains` 為空）。若需要 agent 能呼叫外部 API，請明確啟用並設定允許的網域：
+
+```toml
+[http_request]
+enabled = true
+allowed_domains = ["api.example.com", "api.another.com"]
+```
+
+若您的網路環境需要 Proxy：
+
+```toml
+[proxy]
+enabled = true
+scope = "zeroclaw"
+http_proxy = "http://proxy.corp.example.com:7890"
+https_proxy = "http://proxy.corp.example.com:7890"
+no_proxy = ["localhost", "127.0.0.1"]
+```
+
+詳細說明請參閱 [network-access.md](network-access.md)。
+
 ## 後續步驟
 
+- [network-access.md](network-access.md) — 網路訪問與 Proxy 設定指南
 - [commands-reference.md](commands-reference.md) — 完整指令參考
 - [config-reference.md](config-reference.md) — 設定選項
 - [operations-runbook.md](operations-runbook.md) — 運維手冊
